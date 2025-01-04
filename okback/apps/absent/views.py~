@@ -12,14 +12,12 @@ class AbsentViewSet(viewsets.ModelViewSet):
     queryset = Absent.objects.all()
     serializer_class =AbsentSerializer
 
-    # put()
     def update(self, request, *args, **kwargs):
         # 默认情况下，如果要修改某一条数据，那么要把这个数据的序列化中指定的字段都上传
         # 如果想只修改一部分数据，那么可以在kwargs中设置partial为True
         kwargs['partial'] = True
         return super().update(request, *args, **kwargs)
 
-    #get()
     def list(self,request,*args,**kwargs):
         queryset=Absent.objects.all()
         who=request.query_params.get('who')

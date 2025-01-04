@@ -79,7 +79,7 @@ const resetPassword=()=>{
     <el-container class="container">
         <el-aside class="aside" :width="asideWidth">
             <router-link to="/" class="brand">管理<span v-show="!isCollapse">系统</span></router-link>
-            <el-menu active-text-color="#ffd04b" background-color="#343a40" class="el-menu-vertical-demo"
+            <el-menu :router="true" active-text-color="#ffd04b" background-color="#343a40" class="el-menu-vertical-demo"
                 default-active="1" text-color="#fff" :collapse="isCollapse" :collapse-transition="false" >
                 <!-- 正式的内容 -->
                 <!-- 首页 -->
@@ -93,8 +93,8 @@ const resetPassword=()=>{
                         <el-icon><Checked /></el-icon>
                         <span>考勤管理</span>
                     </template>
-                    <el-menu-item index="2-1"><el-icon><UserFilled /></el-icon>个人考勤</el-menu-item>
-                    <el-menu-item index="2-2"><el-icon><User /></el-icon>下属考勤</el-menu-item>
+                    <el-menu-item index="2-1" :route="{name: 'myabsent'}"><el-icon><UserFilled /></el-icon>个人考勤</el-menu-item>
+                    <el-menu-item index="2-2" :route="{name: 'subabsent'}"><el-icon><User /></el-icon>下属考勤</el-menu-item>
                 </el-sub-menu>
                 <!-- 通知管理     -->
                 <el-sub-menu index="3">
@@ -150,7 +150,7 @@ const resetPassword=()=>{
                 </el-dropdown>
             </el-header>
             <el-main class="main">
-                Main
+                <RouterView></RouterView>
             </el-main>
         </el-container>
     </el-container>
@@ -174,7 +174,7 @@ const resetPassword=()=>{
         <el-button type="primary" @click="resetPassword">确认</el-button>
       </div>
     </template>
-  </el-dialog>
+    </el-dialog>
 
 </template>
 
