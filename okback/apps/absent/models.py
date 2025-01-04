@@ -16,7 +16,6 @@ class AbsentType(models.Model):
     name = models.CharField(max_length=100)
     creata_time = models.DateTimeField(auto_now_add=True)
 
-
 class Absent(models.Model):
     #标题
     title = models.CharField(max_length=200)
@@ -37,7 +36,7 @@ class Absent(models.Model):
     # 发起时间
     create_time=models.DateTimeField(auto_now_add=True)
     # 回复
-    response_content=models.TextField()
+    response_content=models.TextField(blank=True)
 
 
 

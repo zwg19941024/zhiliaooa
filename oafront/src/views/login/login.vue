@@ -34,7 +34,7 @@ const  onSubmit =async()=>{
         let user=data.user;
         AuthStore.setUserToken(user,token);
         //跳转首页
-        router.push({name:"player"});
+        router.push({name:"frame"});
     }catch(detail){
         ElMessage.error(detail)
     }

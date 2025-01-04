@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import login from "@/views/login/login.vue"
 import frame from "@/views/main/frame.vue"
-import player from "@/views/main/player.vue"
 import  {useAuthStore} from '@/stores/auth'
 
 const router = createRouter({
@@ -16,11 +15,6 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: login
-    },
-    {
-      path: '/player',
-      name: 'player',
-      component: player
     }
   ],
 })
