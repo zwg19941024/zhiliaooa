@@ -83,7 +83,7 @@ const resetPassword=()=>{
                 default-active="1" text-color="#fff" :collapse="isCollapse" :collapse-transition="false" >
                 <!-- 正式的内容 -->
                 <!-- 首页 -->
-                <el-menu-item index="1">
+                <el-menu-item index="1" :route="{name: 'frame'}">
                     <el-icon><HomeFilled /></el-icon>
                     <span>首页</span>
                 </el-menu-item>

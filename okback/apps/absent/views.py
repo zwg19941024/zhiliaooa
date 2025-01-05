@@ -27,7 +27,16 @@ class AbsentViewSet(viewsets.ModelViewSet):
             result=queryset.filter(responder=request.user)
         else :
             result=queryset.filter(requester=request.user)
-        return Response(data=AbsentSerializer(result,many=True).data)
+
+        #分页
+        page = self.paginate_queryset(result)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            # get_paginated_response：除了返回序列化后的数据外，还会返回总数据多少，上一页url是什么
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.serializer_class(result, many=True)
+        return Response(data=serializer.data)
 
 
 #请假类型列表

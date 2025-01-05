@@ -38,5 +38,8 @@ class Absent(models.Model):
     # 回复
     response_content=models.TextField(blank=True)
 
+    class Meta:
+        ordering = ['-create_time']
+
 
 

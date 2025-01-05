@@ -1,16 +1,26 @@
 <script setup name="myabsent">
 import OAPageHeader from '@/components/OAPageHeader.vue';
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import absentHttp from '@/api/absentHttp';
 import {ElMessage} from 'element-plus' 
 import http from '@/api/http.js'
+import {useRoute,useRouter} from 'vue-router'
+import timeFormatter from '@/utils/timeFormatter'
 
+const router=useRouter()
+
+let absents=ref([])
 let dialogFormVisible = ref(false)
 let absentForm = reactive({
     title: '',
     absent_type_id: 1,
     date_range: [],
     request_content: '',
+})
+let pagination=reactive({
+    page:1,
+    pageSize:10,
+    total:0
 })
 
 let absentFormTag = ref()
@@ -59,12 +69,36 @@ const onSubmitAbsent =async () => {
             await http.post('/absent/absent',data)
             ElMessage.success('请假单提交成功')
             dialogFormVisible.value = false
+            getMyAbsents(pagination.page)
         }
         catch(detail){
             ElMessage.error(detail)
         }
     })  
 }
+
+//获取个人考勤
+const getMyAbsents =async (page=1) => {
+    try{
+            let result = await http.get('/absent/absent?who=my&page='+page)
+            absents.value=result.results
+            pagination.total=result.count
+            pagination.page=page
+        }
+        catch(detail){
+            ElMessage.error(detail)
+        }
+
+}
+
+onMounted( async () => {
+    try{
+        await getMyAbsents()
+    }catch(detail){
+        ElMessage.error(detail)
+    }
+})
+
 
 </script>
 
@@ -76,9 +110,44 @@ const onSubmitAbsent =async () => {
                     <Plus />
                 </el-icon > 发起考勤</el-button>
         </el-card>
+
+        <!-- 请假单列表 -->
+        <el-card>
+            <el-table :data="absents" style="width: 100%">
+                <el-table-column prop="title" label="标题" width="180" />
+                <el-table-column prop="absent_type.name" label="请假类型" width="180" />
+                <el-table-column prop="request_content" label="请假原因" />
+                <el-table-column label="发起时间" >
+                    <template #default="scope">
+                        {{timeFormatter.stringFromDate(scope.row.create_time)}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="start_date" label="开始时间" />
+                <el-table-column prop="end_date" label="结束时间" />
+                <el-table-column prop="responder.realname" label="审批人" />
+                <el-table-column label="状态">
+                    <template #default="scope">
+                        <el-tag v-if="scope.row.status==1" type="warning">待审批</el-tag>
+                        <el-tag v-else-if="scope.row.status==2" type="success">审批通过</el-tag>
+                        <el-tag v-else-if="scope.row.status==3" type="danger">审批拒绝</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="response_content" label="反馈意见" />
+            </el-table>
+            <!-- 分页 -->
+            <template #footer>
+                <el-pagination background layout="prev, pager, next" 
+                    :total="pagination.total" 
+                    :page-size="pagination.pageSize"
+                    v-model:current-page="pagination.page" 
+                    @current-change="getMyAbsents"/>
+            </template>
+
+        </el-card>
+
     </el-space>
 
-    <!-- 发起考勤的表单 -->
+    <!-- 发起考勤的表单跳出页 -->
     <el-dialog v-model="dialogFormVisible" title="发起请假" width="500">
         <el-form :model="absentForm" :rules='rules' ref='absentFormTag'>
             <!-- 标题 -->
@@ -115,6 +184,17 @@ const onSubmitAbsent =async () => {
             </div>
         </template>
     </el-dialog>
+    
+
+
+
 </template>
 
-<style></style>
+<style scoped>
+.el-pagination {
+    justify-content: center;
+}
+.el-space :deep(.el-space__item){
+    width: 100%;
+}
+</style>
